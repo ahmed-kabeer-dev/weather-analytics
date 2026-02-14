@@ -17,6 +17,8 @@
     "dotenv": "^17.3.1",
     "express": "^5.2.1",
     "express-oauth2-jwt-bearer": "^1.7.4",
+    "jsonwebtoken": "^9.0.3",
+    "jwks-rsa": "^3.2.2",
     "node-cache": "^5.1.2"
   },
   "devDependencies": {

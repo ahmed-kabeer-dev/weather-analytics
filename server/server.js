@@ -26,20 +26,12 @@ app.get('/api/health', (req, res) => {
 
 // Auth error handler
 app.use((err, req, res, next) => {
-  if (err.status === 401) {
-    return res.status(401).json({
+  console.error('Server error:', err.message);
+    return res.status(err.status || 500).json({
       success: false,
-      message: 'Unauthorized. Please log in first.'
+      message: err.message || 'Internal server error'
     });
-  }
-  if (err.status === 403) {
-    return res.status(403).json({
-      success: false,
-      message: 'Forbidden. You do not have access.'
-    });
-  }
-  next(err);
-});
+  });
 
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);

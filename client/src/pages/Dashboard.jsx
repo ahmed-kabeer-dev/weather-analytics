@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
+import { useAuth0 } from '@auth0/auth0-react';
 import WeatherCard from '../components/WeatherCard';
+import LogoutButton from '../components/LogoutButton';
 import { fetchWeatherData } from '../services/weatherAPI';
 
 const Dashboard = () => {
@@ -7,12 +9,13 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [lastUpdated, setLastUpdated] = useState(null);
+  const { getIdTokenClaims } = useAuth0();
 
   const loadData = async () => {
     try {
       setLoading(true);
       setError(null);
-      const response = await fetchWeatherData();
+      const response = await fetchWeatherData(getIdTokenClaims);
       setCities(response.data);
       setLastUpdated(new Date().toLocaleTimeString());
     } catch (err) {
@@ -76,6 +79,7 @@ const Dashboard = () => {
             >
               Refresh
             </button>
+            <LogoutButton />
             {lastUpdated && (
               <p className="text-xs text-gray-400 mt-1">
                 Updated: {lastUpdated}
