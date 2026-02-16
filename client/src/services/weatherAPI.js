@@ -7,7 +7,9 @@ export const fetchWeatherData = async (getIdTokenClaims) => {
   const claims = await getIdTokenClaims();
   const token = claims.__raw;
 
-const response = await axios.get('${API_BASE_URL}/weather', {
+const response = await axios.get(
+  'https://weather-analytics-server.onrender.com/api/weather',
+  {
     headers: {
       Authorization: `Bearer ${token}`
     }
