@@ -1,16 +1,33 @@
 # Weather Analytics Application
 
-A full-stack weather analytics app built with React, Node.js, and Express, styled with Tailwind CSS and bundled with Vite.Displays real-time weather data with a custom Comfort Index Score,Auth0 authentication, and server-side caching.
+A full-stack weather analytics app built with React, Node.js, and Express,
+styled with Tailwind CSS and bundled with Vite. Displays real-time weather
+data with a custom Comfort Index Score and Auth0 authentication.
+
+## Live Demo
+🌐 https://weather-analytics-app-seven.vercel.app
+
+### Test Credentials
+```
+Email:    careers@fidenz.com
+Password: Pass#fidenz
+```
+MFA: Click **"Try another method"** on the MFA screen to use email verification.
+
+> **Note:** The backend is hosted on Render's free tier. If the app takes
+> 30–60 seconds to load on first visit, the server is waking up from sleep.
+> Please wait and it will load normally after that.
 
 ---
 
 ## Tech Stack
 
-- **Frontend:** React + Vite + Tailwind CSS
-- **Backend:** Node.js + Express
-- **Authentication:** Auth0
-- **Caching:** node-cache (in-memory)
-- **Weather Data:** OpenWeatherMap API
+- Frontend: React + Vite + Tailwind CSS
+- Backend: Node.js + Express
+- Authentication: Auth0
+- Caching: node-cache (in-memory)
+- Weather Data: OpenWeatherMap API
+- Charts: Recharts
 
 ---
 
@@ -18,7 +35,7 @@ A full-stack weather analytics app built with React, Node.js, and Express, style
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/ahmed-kabeer-dev/weather-analytics.git
+git clone https://github.com/YOUR_USERNAME/weather-analytics.git
 cd weather-analytics
 ```
 
@@ -31,8 +48,8 @@ npm install
 Create `server/.env`:
 ```
 PORT=5000
-OPENWEATHER_API_KEY=your_openweathermap_api_key
-AUTH0_DOMAIN=your-tenant.us.auth0.com
+OPENWEATHER_API_KEY=7532b61596df970b30c4c1bba844b227
+AUTH0_DOMAIN=dev-3su6c4uxhuwj4ypb.us.auth0.com
 ```
 ```bash
 npm run dev
@@ -46,29 +63,22 @@ npm install
 
 Create `client/.env`:
 ```
-VITE_AUTH0_DOMAIN=your-tenant.us.auth0.com
-VITE_AUTH0_CLIENT_ID=your_auth0_client_id
+VITE_AUTH0_DOMAIN=dev-3su6c4uxhuwj4ypb.us.auth0.com
+VITE_AUTH0_CLIENT_ID=VM6IoaerlP91Bqb2DduDEFL5F2JhBhBO
 ```
 ```bash
 npm run dev
 ```
 
-### 4. Auth0 Configuration
-
-In your Auth0 dashboard under Application Settings, add:
-- **Allowed Callback URLs:** `http://localhost:5173`
-- **Allowed Logout URLs:** `http://localhost:5173`
-- **Allowed Web Origins:** `http://localhost:5173`
-
-### 5. Visit `http://localhost:5173`
+### 4. Visit `http://localhost:5173`
 
 ---
 
 ## Comfort Index Formula
 
-The Comfort Index Score (0–100) measures how comfortable a city's 
-current weather is for being outdoors. It is calculated on the 
-backend using four parameters.
+The Comfort Index Score (0–100) measures how comfortable a city's current
+weather conditions are for being outdoors. It is calculated on the backend
+using four weather parameters.
 
 | Parameter   | Weight | Ideal Range  |
 |-------------|--------|--------------|
@@ -82,24 +92,19 @@ Final Score = (TempScore × 0.40) + (HumidityScore × 0.30) +
 ```
 
 ### Why These Parameters?
-
-I chose these four because they are the most directly felt by a 
-person standing outdoors. Temperature and humidity together determine 
-how the air feels on the skin. Wind either relieves or worsens that 
-feeling. Cloud cover affects sun exposure and brightness. Each 
-parameter is scored 0–100 based on how close it is to the ideal 
-range, then multiplied by its weight.
+I chose these four because they are the most directly felt when standing
+outdoors. Temperature and humidity together determine how the air feels.
+Wind either relieves or worsens that feeling. Cloud cover affects sun
+exposure. Each parameter is scored 0–100 based on how close it is to
+the ideal range, then multiplied by its weight.
 
 ### Why These Weights?
-
-- **Temperature (40%)** is the most noticeable factor in outdoor 
-  comfort and gets the highest weight.
-- **Humidity (30%)** amplifies temperature — high humidity makes 
-  heat unbearable and cold feel worse.
-- **Wind Speed (20%)** has a meaningful but secondary effect — 
-  gentle breeze is pleasant, strong wind is not.
-- **Cloudiness (10%)** has the least direct impact — partial cloud 
-  cover is pleasant but it rarely makes or breaks comfort.
+- **Temperature (40%)** is the most noticeable factor in outdoor comfort
+- **Humidity (30%)** amplifies temperature — high humidity makes heat
+  unbearable and cold feel worse
+- **Wind Speed (20%)** has a meaningful but secondary effect — gentle
+  breeze is pleasant, strong wind is not
+- **Cloudiness (10%)** has the least direct impact on overall comfort
 
 ---
 
@@ -108,57 +113,54 @@ range, then multiplied by its weight.
 - Each city's weather data is cached individually for **5 minutes**
 - First request fetches from OpenWeatherMap API → **MISS**
 - Subsequent requests within 5 minutes use saved data → **HIT**
-- HIT/MISS status is visible on each city card in the UI
+- HIT/MISS status is visible on each city card in the dashboard
 - Debug endpoint: `GET /api/weather/cache-status`
 
 ---
 
 ## Trade-offs Considered
 
-- **node-cache over Redis** — node-cache is simpler and requires no 
-  extra infrastructure. Redis would be better for multi-server 
-  deployments but is unnecessary at this scale.
+- **node-cache over Redis** — simpler with no extra infrastructure needed.
+  Redis would be better for multi-server deployments but is unnecessary
+  at this scale.
 
-- **Per-city caching** — caching each city separately allows partial 
-  cache hits. If 10 of 12 cities are cached, only 2 API calls are made.
+- **Per-city caching** — each city is cached separately so partial cache
+  hits are possible. If 10 of 12 cities are cached, only 2 API calls
+  are made instead of 12.
 
-- **ID Token over Access Token** — Auth0's free plan does not support 
-  custom API audiences for Access Tokens, so the ID token is used to 
-  verify authentication on the backend.
+- **ID Token over Access Token** — Auth0's free plan does not support
+  custom API audiences for Access Tokens so the ID token is used to
+  verify authentication on the backend instead.
 
 ---
 
 ## Known Limitations
 
-- Cache resets on server restart (not persistent)
+- Cache resets on server restart since it is stored in memory
 - OpenWeatherMap free tier is limited to 60 API calls per minute
-- Email MFA as a standalone factor requires a paid Auth0 plan. Both 
-  OTP and Email factors are enabled — users can select email 
-  verification by clicking "Try another method" on the MFA screen
+- Email MFA as a standalone factor requires a paid Auth0 plan. Both
+  OTP and Email factors are enabled — users can select email verification
+  by clicking "Try another method" on the MFA screen
+- Backend hosted on Render free tier spins down after inactivity
 - Cities must be manually added to `cities.json`
 
 ---
 
 ## Authentication
 
-- Only whitelisted users can log in — public signups are disabled
+- Public signups are disabled — only manually created users can log in
+- Whitelist restriction via Auth0 Post-Login Action blocks unauthorized emails
 - MFA is enforced on every login
+- Google social login is disabled
 - All API routes are protected and return 401 for unauthenticated requests
-
-### Test Credentials
-```
-Email:    careers@fidenz.com
-Password: Pass#fidenz
-```
-
-MFA: Scan QR code with Google Authenticator, or click 
-"Try another method" to receive a code via email.
 
 ---
 
 ## Bonus Features
 
-- Dark mode with localStorage persistence
-- Sort cities by comfort score or temperature
-- Filter cities by comfort level
-- Temperature bar chart with color coding
+- **Dark Mode** — toggle between light and dark themes, saved to localStorage
+- **Sorting** — sort cities by comfort score or temperature
+- **Filtering** — filter cities by comfort level (comfortable, moderate,
+  uncomfortable)
+- **Temperature Chart** — bar chart showing current temperature per city,
+  color coded by temperature range
