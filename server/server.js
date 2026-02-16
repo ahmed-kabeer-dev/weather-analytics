@@ -12,7 +12,7 @@ const PORT = process.env.PORT || 5000;
 app.use(cors({
   origin: [
     'http://localhost:5173',
-    'https://weather-analytics.vercel.app'
+    'https://weather-analytics-app-seven.vercel.app'
   ],
   methods: ['GET', 'POST'],
   allowedHeaders: ['Authorization', 'Content-Type']
