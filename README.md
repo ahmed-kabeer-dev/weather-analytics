@@ -12,7 +12,12 @@ data with a custom Comfort Index Score and Auth0 authentication.
 Email:    careers@fidenz.com
 Password: Pass#fidenz
 ```
-MFA: Click **"Try another method"** on the MFA screen to use email verification.
+### MFA Flow
+**First login:** Scan the QR code with Google Authenticator or Authy app
+and enter the 6-digit code.
+
+**Subsequent logins:** Click **"Try another method"** on the MFA screen
+and select Email to receive a verification code at careers@fidenz.com.
 
 > **Note:** The backend is hosted on Render's free tier. If the app takes
 > 30–60 seconds to load on first visit, the server is waking up from sleep.
@@ -31,11 +36,14 @@ MFA: Click **"Try another method"** on the MFA screen to use email verification.
 
 ---
 
-## Setup Instructions
+## Local Setup Instructions
+
+### Prerequisites
+- Node.js v18+
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/YOUR_USERNAME/weather-analytics.git
+git clone https://github.com/ahmed-kabeer-dev/weather-analytics.git
 cd weather-analytics
 ```
 
@@ -43,34 +51,24 @@ cd weather-analytics
 ```bash
 cd server
 npm install
-```
-
-Create `server/.env`:
-```
-PORT=5000
-OPENWEATHER_API_KEY=7532b61596df970b30c4c1bba844b227
-AUTH0_DOMAIN=dev-3su6c4uxhuwj4ypb.us.auth0.com
-```
-```bash
+cp .env.example .env
 npm run dev
 ```
 
 ### 3. Frontend Setup
+
+Open a new terminal:
 ```bash
 cd client
 npm install
-```
-
-Create `client/.env`:
-```
-VITE_AUTH0_DOMAIN=dev-3su6c4uxhuwj4ypb.us.auth0.com
-VITE_AUTH0_CLIENT_ID=VM6IoaerlP91Bqb2DduDEFL5F2JhBhBO
-```
-```bash
+cp .env.example .env
 npm run dev
 ```
 
 ### 4. Visit `http://localhost:5173`
+
+> All environment variables are pre-configured in the `.env.example` files.
+> Just copy them using the `cp` command and run — no manual configuration needed.
 
 ---
 
@@ -139,8 +137,9 @@ the ideal range, then multiplied by its weight.
 - Cache resets on server restart since it is stored in memory
 - OpenWeatherMap free tier is limited to 60 API calls per minute
 - Email MFA as a standalone factor requires a paid Auth0 plan. Both
-  OTP and Email factors are enabled — users can select email verification
-  by clicking "Try another method" on the MFA screen
+  OTP and Email factors are enabled. On first login, users must enroll
+  with OTP (scan QR code). On subsequent logins, users can select email
+  verification by clicking "Try another method" on the MFA screen.
 - Backend hosted on Render free tier spins down after inactivity
 - Cities must be manually added to `cities.json`
 
